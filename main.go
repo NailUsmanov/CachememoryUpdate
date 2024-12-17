@@ -44,7 +44,7 @@ func main() {
 		},
 	}
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 10; i++ {
 		method := methods[rand.Intn(len(methods))]
 		method() // Вызов случайной функции
 	}
@@ -54,7 +54,7 @@ func main() {
 	newCache.Set("userId3", "789", 5)
 
 	fmt.Println(newCache.Get("userId1"))
-	time.Sleep(4 * time.Second)
+	time.Sleep(2 * time.Second)
 	fmt.Println(newCache.Get("userId1"))
 
 	err := newCache.Delete("userId2")
@@ -62,6 +62,6 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Cache state:", newCache)
+	fmt.Println("Cache state:", newCache.SafeGet())
 
 }
