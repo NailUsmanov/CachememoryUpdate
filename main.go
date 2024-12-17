@@ -5,30 +5,59 @@ import (
 
 	"cache/cache"
 	"fmt"
+	"time"
+
+	"math/rand"
 )
 
 func main() {
 	newCache := cache.New()
+	methods := []func(){
+		func() {
+			key := fmt.Sprintf("key %d", rand.Intn(100))
+			value := rand.Intn(10000)
+			err := newCache.Set(key, value, 5)
+			if err != nil {
+				fmt.Println("Set Error:", err)
+			} else {
+				fmt.Printf("Set: {Key: %s, Value: %d}\n", key, value)
+			}
+		},
+		func() {
+			key := fmt.Sprintf("key%d", rand.Intn(100))
+			value, found := newCache.Get(key)
+			if found {
+				fmt.Printf("Get: {Key: %s, Value: %v}\n", key, value)
+			} else {
+				fmt.Printf("Get: Key %s not found\n", key)
+			}
 
-	newCache.Set("userId1", "123", 5)
+		},
+		func() {
+			key := fmt.Sprintf("key%d", rand.Intn(100))
+			err := newCache.Delete(key)
+			if err != nil {
+				fmt.Println("Delete Error:", err)
+			} else {
+				fmt.Printf("Delete: {Key: %s}\n", key)
+			}
+		},
+	}
+
+	for i := 0; i < 3; i++ {
+		method := methods[rand.Intn(len(methods))]
+		method() // Вызов случайной функции
+	}
+
+	newCache.Set("userId1", "123", 3)
 	newCache.Set("userId2", "456", 5)
 	newCache.Set("userId3", "789", 5)
 
-	value, exists := newCache.Get("userId3")
-	if exists {
-		fmt.Println("Value for userId3:", value)
-	} else {
-		fmt.Println("Key userId3 not found")
-	}
+	fmt.Println(newCache.Get("userId1"))
+	time.Sleep(4 * time.Second)
+	fmt.Println(newCache.Get("userId1"))
 
-	value, exists = newCache.Get("userId2")
-	if exists {
-		fmt.Println("Value for userId2:", value)
-	} else {
-		fmt.Println("Key userId2 not found")
-	}
-
-	err := newCache.Delete("userId1")
+	err := newCache.Delete("userId2")
 	if err != nil {
 		fmt.Println(err)
 	}
